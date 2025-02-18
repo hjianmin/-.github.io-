@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>倒计时</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+            color: #00ff80;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+        }
+        .timer {
+            font-size: 20vw; /* 字体大小根据视口宽度自适应 */
+            margin-bottom: 2rem;
+            font-weight: bold;
+        }
+         .label {
+            font-size: 9vw; /* 字体大小根据视口宽度自适应 */
+            margin-bottom: 2rem;
+            font-weight: bold;
+        }
+        .controls {
+            display: flex;
+            gap: 1rem;
+        }
+        button {
+            background-color: #00ff80;
+            color: #000;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #00e676;
+        }
+    </style>
+</head>
+<body>
+    <div class="timer" id="timer">03:00</div>
+    <div class="label" id="label">时间到了哟！！！</div>
+    <div class="controls">
+        <button id="startBtn">开始</button>
+        <button id="pauseBtn">暂停</button>
+        <button id="resetBtn">重置</button>
+    </div>
+
+    <script>
+
+        let setTime = 5;
+        let timeLeft = setTime; // 3 minutes in seconds
+        let intervalId;
+        const timerElement = document.getElementById('timer');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            document.getElementById("timer").style.display = "block";
+            document.getElementById("label").style.display = "none";
+        }
+
+        function startTimer() {
+            intervalId = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    updateTimer();
+                } else {
+                    clearInterval(intervalId);
+                   document.getElementById("timer").style.display = "none";
+                   document.getElementById("label").style.display = "block";
+                }
+            }, 1000);
+        }
+
+        startBtn.addEventListener('click', () => {
+            document.getElementById("timer").style.display = "block";
+            document.getElementById("label").style.display = "none";
+            if (!intervalId) {
+                startTimer();
+            }
+            if (timeLeft == 0){
+                timeLeft = setTime;
+                clearInterval(intervalId);
+                intervalId = null;
+                startTimer();
+            }
+        });
+
+        pauseBtn.addEventListener('click', () => {
+            clearInterval(intervalId);
+            intervalId = null;
+        });
+
+        resetBtn.addEventListener('click', () => {
+            clearInterval(intervalId);
+            timeLeft = setTime;
+            updateTimer();
+            intervalId = null;
+        });
+
+        updateTimer();
+    </script>
+</body>
+</html>
